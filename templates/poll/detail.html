@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<h1 class='text-center mb-3'>{{question.question_text}}</h1>
+	<br>
+
+	<!-- Create Choice Trigger -->
+	<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+	  Create a choice
+	</button>
+
+	<!-- Create Question Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Create a choice!</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <form method = "POST" action = ''>
+	      <div class="modal-body">
+		        {% csrf_token %}
+		        {{form.choice_text}}
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="submit" name="create" class="btn btn-primary">Save</button>
+	      </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	<br>
+	<br>
+
+	{% if error_message %}
+		<p class = 'alert alert-danger'>
+			<strong> {{ error_message }} </strong>
+		</p>
+	{% endif %}
+
+	{% if question.choice_set.all.exists %}
+		<div class = 'card mb-3'>
+			<div class = 'card-body'>
+				<div class = 'container'>
+					<form method = 'POST' action = "{% url 'poll:vote' question.id %}">
+						{% csrf_token %}
+						{% for choice in question.choice_set.all %}
+							<div class = 'check-box'>
+								<input 
+									type = "radio"
+									name = "choice"
+									class = 'form-check-input'
+									id = 'choice{{ forloop.counter }}'
+									value = '{{ choice.id }}'
+									/>
+								<label for = 'choice{{ forloop.counter }}'>{{choice.choice_text}}</label>
+							</div>
+						{% endfor %}
+						<input type = 'submit' value = 'Vote' class = 'btn btn-success btn-lg btn-block mt-4'/>
+					</form>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+	<a class = 'btn btn-secondary btn-sm mb-3' href = "{% url 'poll:index' %}">Back to Polls</a>
+
+{% endblock %}

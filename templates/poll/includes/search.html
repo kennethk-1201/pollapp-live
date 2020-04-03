@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+	{% for question in queryset %}
+		<p>{{question.question_text}}</p>
+	{% endfor %}
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load humanize %}
+
+	<h1 class = 'text-center mb-3'>Poll Questions</h1>
+	<br>
+	<!-- Create Question Trigger -->
+	<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+	  Create a question
+	</button>
+
+	<!-- Create Question Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Create a question!</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <form method = "POST" action = ''>
+	      <div class="modal-body">
+		        {% csrf_token %}
+		        {{form.question_text}}
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="submit" name="create" class="btn btn-primary">Save</button>
+	      </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	<br>
+	<br>
+	{% if latest_question_list %}
+		{% for question in latest_question_list %}
+			<div class = 'card mb-3'>
+				<div class = 'card-body'>
+					<p class = 'lead'> {{question.question_text}}</p>
+					<p><span style = 'font-size: 13px; color:gray'>posted {{question.pub_date|naturaltime}}</span></p>
+					<a href = "{% url 'poll:detail' question.id %}" class='btn btn-primary btn-sm'>Vote Now</a>
+					<a href = "{% url 'poll:result' question.id %}" class='btn btn-secondary btn-sm'>Results</a>
+					
+					<!-- Delete Question Trigger -->
+					<button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#DeleteModal">
+						<svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+						  <path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+						  <path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/>
+						</svg>
+					</button>
+
+					<!-- Delete Question Modal -->
+					<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalLabel">Delete Question</h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      <form method = "POST" action = ''>
+					      	<div class = 'modal-body'>
+						      	{% csrf_token %}
+						      	Are you sure you want to delete?
+					      	</div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+							<button type="submit" name="delete" value='{{question.id}}' class="btn btn-primary"/>Delete</button>
+					      </div>
+					      </form>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p> No polls available </p>
+	{% endif %}
+{% endblock %}

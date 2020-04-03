@@ -1,0 +1,18 @@
+<nav class="navbar navbar-light bg-primary">
+  <a class="navbar-brand" href="/poll" style ='color: white'><b>Poll App</b></a>
+	<div class ="search-bar mt-sm-2 mr-2">
+
+		<form method = 'get' action = "{% url 'poll:search' %}" class="form-inline">
+			<input 
+			type = 'text'
+			class = 'form-control' 
+			name = 'q' 
+			id = 'q_id' 
+			placeholder="Search..." 
+			value = {{request.GET.q}}>
+			<div class="d-inline p-2">
+			<button type = 'submit' class = 'btn btn-light search-button'>Search</button>
+			</div>
+		</form>
+	</div>
+</nav>
